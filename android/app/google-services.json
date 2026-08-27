@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "484098097286",
+    "project_id": "robert-flutter-iti",
+    "storage_bucket": "robert-flutter-iti.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484098097286:android:30f38caedb697613c11107",
+        "android_client_info": {
+          "package_name": "com.example.flutter_iti_movie_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBZ3WU1WfryoSEzgHJ6QSPrjr_ojeDFhY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
