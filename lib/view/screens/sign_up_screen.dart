@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
 import "package:firebase_auth/firebase_auth.dart";
-import "package:flutter_iti_movie_app/service/firebase_auth_service.dart";
+import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
 import "package:flutter_iti_movie_app/view/screens/home_screen.dart";
 import "package:flutter_iti_movie_app/view/screens/sign_in_screen.dart";
+import "package:flutter_iti_movie_app/view/widgets/theme.dart";
 import 'package:validator_regex/validator_regex.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -13,6 +14,8 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final UITheme theme = UITheme.instance;
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
   bool obscurePass = true;
@@ -71,7 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.amber, title: Text("SIGN UP")),
+      appBar: AppBar(backgroundColor: theme.bgColor, title: Text("SIGN UP")),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(

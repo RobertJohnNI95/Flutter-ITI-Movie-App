@@ -1,8 +1,9 @@
 import "package:flutter/material.dart";
 import "package:firebase_auth/firebase_auth.dart";
-import "package:flutter_iti_movie_app/service/firebase_auth_service.dart";
+import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
 import "package:flutter_iti_movie_app/view/screens/home_screen.dart";
 import "package:flutter_iti_movie_app/view/screens/sign_up_screen.dart";
+import "package:flutter_iti_movie_app/view/widgets/theme.dart";
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -12,6 +13,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final UITheme theme = UITheme.instance;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
   bool obscurePass = true;
@@ -65,7 +67,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.amber, title: Text("SIGN IN")),
+      appBar: AppBar(backgroundColor: theme.bgColor, title: Text("SIGN IN")),
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(
