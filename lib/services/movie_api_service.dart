@@ -7,9 +7,9 @@ class MovieApiService {
   static const _accessToken =
       'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxOGExYWEwYTIzMGZkZDYxZGI1OWQ5MWFiMTM0OGY0ZiIsIm5iZiI6MTc4NzkwNjE0NC42ODk5OTk4LCJzdWIiOiI2YTkxNDg2MDZkNzNiNzFiZDU4NGI4MjYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.VLipDJ1FtePulO7vcWEBOD1WctXxIBiQv7o26erZSu8';
 
-  Future<List<MovieRecord>> getPopularMovies({int page = 1}) async {
+  Future<List<MovieRecord>> getPopularMovies() async {
     final response = await http.get(
-      Uri.parse('$_baseUrl/movie/popular?page=$page'),
+      Uri.parse('$_baseUrl/movie/popular'),
       headers: {
         'Authorization': 'Bearer $_accessToken',
         'accept': 'application/json',
