@@ -34,4 +34,21 @@ class MovieController {
     }
     return null;
   }
+
+  List<MovieRecord> searchMovies(String searchWord) {
+    final query = searchWord.trim();
+    if (query.isEmpty) {
+      return List<MovieRecord>.from(provider.movies);
+    }
+
+    final lowerQuery = query.toLowerCase();
+    return provider.movies.where((movie) {
+      final title = movie.title.toLowerCase();
+      final overview = (movie.overview ?? "").toLowerCase();
+      final releaseDate = (movie.releaseDate ?? "").toLowerCase();
+      return title.contains(lowerQuery) ||
+          overview.contains(lowerQuery) ||
+          releaseDate.contains(lowerQuery);
+    }).toList();
+  }
 }

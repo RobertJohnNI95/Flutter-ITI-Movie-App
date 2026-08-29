@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_iti_movie_app/controller/movie_controller.dart";
 import "package:flutter_iti_movie_app/providers/movie_provider.dart";
 import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
+import "package:flutter_iti_movie_app/view/screens/search_screen.dart";
 import "package:flutter_iti_movie_app/view/screens/sign_in_screen.dart";
 import "package:flutter_iti_movie_app/view/widgets/movie_card.dart";
 import "package:flutter_iti_movie_app/view/widgets/theme.dart";
@@ -126,7 +127,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(width: 5),
                     ElevatedButton(
                       onPressed: () {
-                        // Search Function
+                        final query = searchController.text.trim();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SearchScreen(
+                              movieProvider: movieProvider,
+                              searchWord: query,
+                            ),
+                          ),
+                        );
                       },
                       child: Text("Search"),
                     ),
