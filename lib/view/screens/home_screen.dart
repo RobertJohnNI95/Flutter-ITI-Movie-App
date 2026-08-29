@@ -5,6 +5,7 @@ import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
 import "package:flutter_iti_movie_app/view/screens/sign_in_screen.dart";
 import "package:flutter_iti_movie_app/view/widgets/movie_card.dart";
 import "package:flutter_iti_movie_app/view/widgets/theme.dart";
+import "package:flutter_iti_movie_app/view/widgets/wide_button.dart";
 import "package:provider/provider.dart";
 
 class HomeScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late final MovieProvider movieProvider;
   late final MovieController movieController;
   String? _loadError;
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -48,20 +50,32 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: theme.bgColor,
-        leading: IconButton(
-          onPressed: () async {
-            await auth.signOut();
-            Navigator.pushReplacement(
-              // ignore: use_build_context_synchronously
-              context,
-              MaterialPageRoute(builder: (_) => SignInScreen()),
-            );
-          },
-          icon: Icon(Icons.logout, color: Colors.red),
+      appBar: AppBar(backgroundColor: theme.bgColor, title: Text("WELCOME")),
+      drawer: Drawer(
+        width: 200,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 50),
+              WideButton(
+                buttonLabel: "Sign Out",
+                onPressed: () async {
+                  await auth.signOut();
+                  Navigator.pushReplacement(
+                    // ignore: use_build_context_synchronously
+                    context,
+                    MaterialPageRoute(builder: (_) => SignInScreen()),
+                  );
+                },
+                bgColor: Colors.red,
+                textColor: Colors.white,
+                icon: Icons.logout,
+              ),
+            ],
+          ),
         ),
-        title: Text("WELCOME"),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -71,47 +85,81 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         width: double.infinity,
-        child: ChangeNotifierProvider.value(
-          value: movieProvider,
-          child: Consumer<MovieProvider>(
-            builder: (context, provider, child) {
-              if (provider.isLoading && provider.movies.isEmpty) {
-                return Center(child: CircularProgressIndicator());
-              }
-
-              if (_loadError != null) {
-                return _ErrorMessage(
-                  message: _loadError!,
-                  onRetry: _loadMovies,
-                );
-              }
-
-              if (provider.errorMessage != null) {
-                return _ErrorMessage(
-                  message: provider.errorMessage!,
-                  onRetry: _loadMovies,
-                );
-              }
-
-              if (provider.movies.isEmpty) {
-                return Center(child: Text("No movies found"));
-              }
-
-              return GridView.builder(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
                 padding: EdgeInsets.all(8),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  childAspectRatio: 0.62,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.search),
+                          labelText: "Search",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Search Function
+                      },
+                      child: Text("Search"),
+                    ),
+                  ],
                 ),
-                itemCount: provider.movies.length,
-                itemBuilder: (context, index) {
-                  final movie = provider.movies[index];
-                  return MovieCard(movie: movie);
-                },
-              );
-            },
+              ),
+              Expanded(
+                child: ChangeNotifierProvider.value(
+                  value: movieProvider,
+                  child: Consumer<MovieProvider>(
+                    builder: (context, provider, child) {
+                      if (provider.isLoading && provider.movies.isEmpty) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      if (_loadError != null) {
+                        return _ErrorMessage(
+                          message: _loadError!,
+                          onRetry: _loadMovies,
+                        );
+                      }
+
+                      if (provider.errorMessage != null) {
+                        return _ErrorMessage(
+                          message: provider.errorMessage!,
+                          onRetry: _loadMovies,
+                        );
+                      }
+
+                      if (provider.movies.isEmpty) {
+                        return Center(child: Text("No movies found"));
+                      }
+
+                      return GridView.builder(
+                        padding: EdgeInsets.all(8),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          childAspectRatio: 0.62,
+                        ),
+                        itemCount: provider.movies.length,
+                        itemBuilder: (context, index) {
+                          final movie = provider.movies[index];
+                          return MovieCard(movie: movie);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
