@@ -52,13 +52,32 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(backgroundColor: theme.bgColor, title: Text("WELCOME")),
       drawer: Drawer(
+        backgroundColor: theme.bgColor.withValues(alpha: 0.8),
         width: 200,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 50),
+              SizedBox(height: 100),
+              WideButton(
+                onPressed: () {},
+                buttonLabel: "Liked Movies",
+                icon: Icons.favorite,
+              ),
+              SizedBox(height: 5),
+              WideButton(
+                onPressed: () {},
+                buttonLabel: "Watched Movies",
+                icon: Icons.check,
+              ),
+              SizedBox(height: 5),
+              WideButton(
+                onPressed: () {},
+                buttonLabel: "Watching",
+                icon: Icons.movie,
+              ),
+              Divider(),
               WideButton(
                 buttonLabel: "Sign Out",
                 onPressed: () async {
