@@ -18,11 +18,11 @@ class WideButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: (bgColor == null)
-          ? null
-          : ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll<Color>(bgColor!),
-            ),
+      style: ButtonStyle(
+        backgroundColor: (bgColor == null)
+            ? null
+            : WidgetStatePropertyAll<Color>(bgColor!),
+      ),
       onPressed: onPressed,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

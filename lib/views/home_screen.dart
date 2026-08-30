@@ -1,12 +1,12 @@
 import "package:flutter/material.dart";
-import "package:flutter_iti_movie_app/controller/movie_controller.dart";
+import "package:flutter_iti_movie_app/controllers/movie_controller.dart";
 import "package:flutter_iti_movie_app/providers/movie_provider.dart";
 import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
-import "package:flutter_iti_movie_app/view/screens/search_screen.dart";
-import "package:flutter_iti_movie_app/view/screens/sign_in_screen.dart";
-import "package:flutter_iti_movie_app/view/widgets/movie_card.dart";
-import "package:flutter_iti_movie_app/view/widgets/theme.dart";
-import "package:flutter_iti_movie_app/view/widgets/wide_button.dart";
+import "package:flutter_iti_movie_app/views/search_screen.dart";
+import "package:flutter_iti_movie_app/views/sign_in_screen.dart";
+import "package:flutter_iti_movie_app/widgets/movie_card.dart";
+import "package:flutter_iti_movie_app/utils/theme.dart";
+import "package:flutter_iti_movie_app/widgets/wide_button.dart";
 import "package:provider/provider.dart";
 
 class HomeScreen extends StatefulWidget {

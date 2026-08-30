@@ -1,6 +1,6 @@
 import "package:sqflite/sqflite.dart";
 import "package:path/path.dart";
-import "package:flutter_iti_movie_app/model/movie_record.dart";
+import "package:flutter_iti_movie_app/models/movie_record.dart";
 
 class MovieDBService {
   static final MovieDBService instance = MovieDBService._internal();
@@ -44,7 +44,11 @@ class MovieDBService {
     ''');
   }
 
-  Future<void> _upgradeDatabase(Database db, int oldVersion, int newVersion) async {
+  Future<void> _upgradeDatabase(
+    Database db,
+    int oldVersion,
+    int newVersion,
+  ) async {
     if (oldVersion < 2) {
       await db.execute("ALTER TABLE movies ADD COLUMN overview TEXT");
       await db.execute("ALTER TABLE movies ADD COLUMN poster_path TEXT");

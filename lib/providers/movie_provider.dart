@@ -1,6 +1,6 @@
 import "package:flutter/foundation.dart";
-import "package:flutter_iti_movie_app/model/movie_record.dart";
-import "package:flutter_iti_movie_app/services/movie_db_service.dart";
+import "package:flutter_iti_movie_app/models/movie_record.dart";
+import "package:flutter_iti_movie_app/database/movie_db_service.dart";
 
 class MovieProvider extends ChangeNotifier {
   MovieProvider({MovieDBService? databaseService})

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:flutter_iti_movie_app/model/movie_record.dart";
-import "package:flutter_iti_movie_app/view/screens/movie_details_screen.dart";
+import "package:flutter_iti_movie_app/models/movie_record.dart";
+import "package:flutter_iti_movie_app/views/movie_details_screen.dart";
 
 class MovieCard extends StatelessWidget {
   const MovieCard({super.key, required this.movie});

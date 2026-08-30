@@ -1,4 +1,4 @@
-import "package:flutter_iti_movie_app/model/movie_record.dart";
+import "package:flutter_iti_movie_app/models/movie_record.dart";
 import "package:flutter_iti_movie_app/providers/movie_provider.dart";
 import "package:flutter_iti_movie_app/services/movie_api_service.dart";
 
