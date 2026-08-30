@@ -73,11 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: Icons.check,
               ),
               SizedBox(height: 5),
-              WideButton(
-                onPressed: () {},
-                buttonLabel: "Watching",
-                icon: Icons.movie,
-              ),
+
               Divider(),
               WideButton(
                 buttonLabel: "Sign Out",
