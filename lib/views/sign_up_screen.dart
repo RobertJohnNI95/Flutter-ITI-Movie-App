@@ -4,6 +4,7 @@ import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
 import "package:flutter_iti_movie_app/views/home_screen.dart";
 import "package:flutter_iti_movie_app/views/sign_in_screen.dart";
 import "package:flutter_iti_movie_app/utils/theme.dart";
+import "package:flutter_iti_movie_app/widgets/wide_button.dart";
 import 'package:validator_regex/validator_regex.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -158,18 +159,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 SizedBox(height: 10),
-                _isLoading
-                    ? CircularProgressIndicator(strokeWidth: 2)
-                    : ElevatedButton(
-                        onPressed: signUp,
-                        child: Text(
-                          "SIGN UP",
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: _isLoading
+                      ? CircularProgressIndicator(strokeWidth: 2)
+                      : WideButton(
+                          onPressed: signUp,
+                          buttonLabel: "SIGN UP",
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
+                ),
               ],
             ),
           ],

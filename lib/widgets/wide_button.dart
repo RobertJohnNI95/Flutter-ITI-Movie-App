@@ -8,20 +8,21 @@ class WideButton extends StatelessWidget {
     this.icon,
     this.bgColor,
     this.textColor,
+    this.style,
   });
   final VoidCallback onPressed;
   final String buttonLabel;
   final IconData? icon;
   final Color? bgColor;
   final Color? textColor;
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ButtonStyle(
-        backgroundColor: (bgColor == null)
-            ? null
-            : WidgetStatePropertyAll<Color>(bgColor!),
+      style: ElevatedButton.styleFrom(
+        minimumSize: Size(double.infinity, 50),
+        backgroundColor: (bgColor == null) ? null : bgColor!,
       ),
       onPressed: onPressed,
       child: Row(
