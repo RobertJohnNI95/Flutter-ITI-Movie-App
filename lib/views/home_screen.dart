@@ -10,7 +10,8 @@ import "package:flutter_iti_movie_app/widgets/wide_button.dart";
 import "package:provider/provider.dart";
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.user_id});
+  final String user_id;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();

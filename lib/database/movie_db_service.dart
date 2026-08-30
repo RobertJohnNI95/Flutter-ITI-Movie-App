@@ -3,9 +3,7 @@ import "package:path/path.dart";
 import "package:flutter_iti_movie_app/models/movie_record.dart";
 
 class MovieDBService {
-  static final MovieDBService instance = MovieDBService._internal();
-
-  MovieDBService._internal();
+  static final MovieDBService instance = MovieDBService();
 
   Database? _database;
 
@@ -22,12 +20,7 @@ class MovieDBService {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, "movie.db");
 
-    return openDatabase(
-      path,
-      version: 2,
-      onCreate: _createDatabase,
-      onUpgrade: _upgradeDatabase,
-    );
+    return openDatabase(path, version: 1, onCreate: _createDatabase);
   }
 
   Future<void> _createDatabase(Database db, int version) async {
@@ -42,22 +35,6 @@ class MovieDBService {
         release_date TEXT
       )
     ''');
-  }
-
-  Future<void> _upgradeDatabase(
-    Database db,
-    int oldVersion,
-    int newVersion,
-  ) async {
-    if (oldVersion < 2) {
-      await db.execute("ALTER TABLE movies ADD COLUMN overview TEXT");
-      await db.execute("ALTER TABLE movies ADD COLUMN poster_path TEXT");
-      await db.execute("ALTER TABLE movies ADD COLUMN backdrop_path TEXT");
-      await db.execute(
-        "ALTER TABLE movies ADD COLUMN vote_average REAL NOT NULL DEFAULT 0",
-      );
-      await db.execute("ALTER TABLE movies ADD COLUMN release_date TEXT");
-    }
   }
 
   Future<int> insertMovie(MovieRecord movie) async {
