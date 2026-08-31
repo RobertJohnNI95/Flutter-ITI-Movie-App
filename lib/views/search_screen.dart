@@ -61,79 +61,54 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         width: double.infinity,
         child: SafeArea(
-          child: Column(
-            children: [
-              /*
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: TextField(
-                  controller: _searchController,
-                  onSubmitted: _performSearch,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    hintText: "Search movies",
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: () => _performSearch(_searchController.text),
+          child: ChangeNotifierProvider.value(
+            value: widget.movieProvider,
+            child: Consumer<MovieProvider>(
+              builder: (context, provider, child) {
+                if (provider.isLoading && provider.movies.isEmpty) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (provider.errorMessage != null) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(provider.errorMessage!),
                     ),
+                  );
+                }
+
+                final movies = _searchController.text.trim().isEmpty
+                    ? provider.movies
+                    : _filteredMovies;
+
+                if (movies.isEmpty) {
+                  final query = _searchController.text.trim();
+                  return Center(
+                    child: Text(
+                      query.isEmpty
+                          ? "No movies found"
+                          : "No movies found for '$query'",
+                    ),
+                  );
+                }
+
+                return GridView.builder(
+                  padding: const EdgeInsets.all(8),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    childAspectRatio: 0.62,
                   ),
-                ),
-              ),
-              */
-              Expanded(
-                child: ChangeNotifierProvider.value(
-                  value: widget.movieProvider,
-                  child: Consumer<MovieProvider>(
-                    builder: (context, provider, child) {
-                      if (provider.isLoading && provider.movies.isEmpty) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (provider.errorMessage != null) {
-                        return Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Text(provider.errorMessage!),
-                          ),
-                        );
-                      }
-
-                      final movies = _searchController.text.trim().isEmpty
-                          ? provider.movies
-                          : _filteredMovies;
-
-                      if (movies.isEmpty) {
-                        final query = _searchController.text.trim();
-                        return Center(
-                          child: Text(
-                            query.isEmpty
-                                ? "No movies found"
-                                : "No movies found for '$query'",
-                          ),
-                        );
-                      }
-
-                      return GridView.builder(
-                        padding: const EdgeInsets.all(8),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 8,
-                              childAspectRatio: 0.62,
-                            ),
-                        itemCount: movies.length,
-                        itemBuilder: (context, index) {
-                          final movie = movies[index];
-                          return MovieCard(movie: movie);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
+                  itemCount: movies.length,
+                  itemBuilder: (context, index) {
+                    final movie = movies[index];
+                    return MovieCard(movie: movie);
+                  },
+                );
+              },
+            ),
           ),
         ),
       ),

@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_iti_movie_app/controllers/movie_controller.dart";
 import "package:flutter_iti_movie_app/providers/movie_provider.dart";
 import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
+import "package:flutter_iti_movie_app/views/favorites_screen.dart";
 import "package:flutter_iti_movie_app/views/search_screen.dart";
 import "package:flutter_iti_movie_app/views/sign_in_screen.dart";
 import "package:flutter_iti_movie_app/widgets/movie_card.dart";
@@ -10,8 +11,8 @@ import "package:flutter_iti_movie_app/widgets/wide_button.dart";
 import "package:provider/provider.dart";
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.user_id});
-  final String user_id;
+  const HomeScreen({super.key, required this.userId});
+  final String userId;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -63,8 +64,24 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               SizedBox(height: 100),
               WideButton(
+                bgColor: Colors.teal,
+                textColor: Colors.white,
                 onPressed: () {},
-                buttonLabel: "Liked Movies",
+                buttonLabel: "Home",
+                icon: Icons.home,
+              ),
+              SizedBox(height: 5),
+              WideButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          FavoritesScreen(userId: auth.currentUser!.uid),
+                    ),
+                  );
+                },
+                buttonLabel: "Favorite Movies",
                 icon: Icons.favorite,
               ),
               SizedBox(height: 5),
@@ -74,7 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: Icons.check,
               ),
               SizedBox(height: 5),
-
               Divider(),
               WideButton(
                 buttonLabel: "Sign Out",

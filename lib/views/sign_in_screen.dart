@@ -42,7 +42,7 @@ class _SignInScreenState extends State<SignInScreen> {
         // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(
-          builder: (_) => HomeScreen(user_id: auth.currentUser!.uid),
+          builder: (_) => HomeScreen(userId: auth.currentUser!.uid),
         ),
       );
     } on FirebaseAuthException catch (error) {
