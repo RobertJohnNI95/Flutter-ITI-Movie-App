@@ -15,7 +15,6 @@ class MovieAppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: UITheme.bgColor.withValues(alpha: 0.8),
-      width: 200,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

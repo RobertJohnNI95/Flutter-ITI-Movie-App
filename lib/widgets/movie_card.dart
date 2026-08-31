@@ -1,7 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
-import "package:flutter_iti_movie_app/database/favorites_db_service.dart";
 import "package:flutter_iti_movie_app/models/movie_record.dart";
+import "package:flutter_iti_movie_app/services/favorite_cloud_service.dart";
 import "package:flutter_iti_movie_app/views/movie_details_screen.dart";
 
 class MovieCard extends StatefulWidget {
@@ -33,9 +33,9 @@ class _MovieCardState extends State<MovieCard> {
       return;
     }
 
-    final bool favorite = await FavoritesDBService.instance.isFavorite(
-      movieId,
+    final bool favorite = await FavoriteCloudService().isFavorite(
       userId,
+      movieId,
     );
 
     if (mounted) {
@@ -57,19 +57,45 @@ class _MovieCardState extends State<MovieCard> {
       return;
     }
 
-    setState(() => _isLoading = true);
-
-    if (_isFavorite) {
-      await FavoritesDBService.instance.deleteFavorite(movieId, userId);
-    } else {
-      await FavoritesDBService.instance.insertFavorite(widget.movie, userId);
-    }
+    final bool originalState = _isFavorite;
+    final bool nextState = !originalState;
 
     if (mounted) {
       setState(() {
-        _isFavorite = !_isFavorite;
-        _isLoading = false;
+        _isFavorite = nextState;
+        _isLoading = true;
       });
+    }
+
+    try {
+      if (nextState) {
+        await FavoriteCloudService().addFavorite(userId, widget.movie);
+      } else {
+        await FavoriteCloudService().deleteFavorite(userId, movieId);
+      }
+
+      final bool refreshedFavorite = await FavoriteCloudService().isFavorite(
+        userId,
+        movieId,
+      );
+
+      if (mounted) {
+        setState(() {
+          _isFavorite = refreshedFavorite;
+          _isLoading = false;
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _isFavorite = originalState;
+          _isLoading = false;
+        });
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Could not update favorite: $error")),
+      );
     }
   }
 
@@ -135,13 +161,15 @@ class _MovieCardState extends State<MovieCard> {
               ),
               Padding(
                 padding: EdgeInsets.only(top: 4, bottom: 8),
-                child: IconButton(
-                  onPressed: _isLoading ? null : _toggleFavorite,
-                  icon: Icon(
-                    _isFavorite ? Icons.favorite : Icons.favorite_outline,
-                    color: _isFavorite ? Colors.red : Colors.black,
-                  ),
-                ),
+                child: _isLoading
+                    ? CircularProgressIndicator()
+                    : IconButton(
+                        onPressed: _toggleFavorite,
+                        icon: Icon(
+                          _isFavorite ? Icons.favorite : Icons.favorite_outline,
+                          color: _isFavorite ? Colors.red : Colors.black,
+                        ),
+                      ),
               ),
             ],
           ),

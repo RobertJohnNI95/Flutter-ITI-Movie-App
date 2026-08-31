@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:flutter_iti_movie_app/database/favorites_db_service.dart";
 import "package:flutter_iti_movie_app/models/movie_record.dart";
+import "package:flutter_iti_movie_app/services/favorite_cloud_service.dart";
 import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
 import "package:flutter_iti_movie_app/utils/theme.dart";
 import "package:flutter_iti_movie_app/widgets/movie_app_drawer.dart";
@@ -16,16 +16,12 @@ class FavoritesScreen extends StatefulWidget {
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
   final FirebaseAuthService auth = FirebaseAuthService();
-  late Future<List<MovieRecord>> _favoriteMovies;
+  late final Stream<List<MovieRecord>> _favoriteMoviesStream;
 
   @override
   void initState() {
     super.initState();
-    _loadFavorites();
-  }
-
-  void _loadFavorites() {
-    _favoriteMovies = FavoritesDBService.instance.getFavorites(widget.userId);
+    _favoriteMoviesStream = FavoriteCloudService().favoritesStream(widget.userId);
   }
 
   @override
@@ -40,8 +36,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         decoration: BoxDecoration(image: UITheme.bgImage),
         width: double.infinity,
         child: SafeArea(
-          child: FutureBuilder<List<MovieRecord>>(
-            future: _favoriteMovies,
+          child: StreamBuilder<List<MovieRecord>>(
+            stream: _favoriteMoviesStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
