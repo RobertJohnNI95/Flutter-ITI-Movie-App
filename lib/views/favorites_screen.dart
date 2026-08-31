@@ -3,10 +3,8 @@ import "package:flutter_iti_movie_app/database/favorites_db_service.dart";
 import "package:flutter_iti_movie_app/models/movie_record.dart";
 import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
 import "package:flutter_iti_movie_app/utils/theme.dart";
-import "package:flutter_iti_movie_app/views/home_screen.dart";
-import "package:flutter_iti_movie_app/views/sign_in_screen.dart";
+import "package:flutter_iti_movie_app/widgets/movie_app_drawer.dart";
 import "package:flutter_iti_movie_app/widgets/movie_card.dart";
-import "package:flutter_iti_movie_app/widgets/wide_button.dart";
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key, required this.userId});
@@ -37,61 +35,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         backgroundColor: UITheme.bgColor,
         title: Text("FAVORITE MOVIES"),
       ),
-      drawer: Drawer(
-        backgroundColor: UITheme.bgColor.withValues(alpha: 0.8),
-        width: 200,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 100),
-              WideButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => HomeScreen(userId: auth.currentUser!.uid),
-                    ),
-                  );
-                },
-                buttonLabel: "Home",
-                icon: Icons.home,
-              ),
-              SizedBox(height: 5),
-              WideButton(
-                bgColor: Colors.teal,
-                textColor: Colors.white,
-                onPressed: () {},
-                buttonLabel: "Favorite Movies",
-                icon: Icons.favorite,
-              ),
-              SizedBox(height: 5),
-              WideButton(
-                onPressed: () {},
-                buttonLabel: "Watched Movies",
-                icon: Icons.check,
-              ),
-              SizedBox(height: 5),
-              Divider(),
-              WideButton(
-                buttonLabel: "Sign Out",
-                onPressed: () async {
-                  await auth.signOut();
-                  Navigator.pushReplacement(
-                    // ignore: use_build_context_synchronously
-                    context,
-                    MaterialPageRoute(builder: (_) => SignInScreen()),
-                  );
-                },
-                bgColor: Colors.red,
-                textColor: Colors.white,
-                icon: Icons.logout,
-              ),
-            ],
-          ),
-        ),
-      ),
+      drawer: MovieAppDrawer(currentPage: 'favorites'),
       body: Container(
         decoration: BoxDecoration(image: UITheme.bgImage),
         width: double.infinity,
