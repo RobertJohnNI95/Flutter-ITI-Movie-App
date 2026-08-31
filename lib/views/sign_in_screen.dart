@@ -111,7 +111,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   ],
                 ),
                 SizedBox(height: 10),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextField(
