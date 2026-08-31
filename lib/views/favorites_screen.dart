@@ -17,7 +17,6 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  final UITheme theme = UITheme.instance;
   final FirebaseAuthService auth = FirebaseAuthService();
   late Future<List<MovieRecord>> _favoriteMovies;
 
@@ -35,11 +34,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.bgColor,
+        backgroundColor: UITheme.bgColor,
         title: Text("FAVORITE MOVIES"),
       ),
       drawer: Drawer(
-        backgroundColor: theme.bgColor.withValues(alpha: 0.8),
+        backgroundColor: UITheme.bgColor.withValues(alpha: 0.8),
         width: 200,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -94,12 +93,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/bg1.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: BoxDecoration(image: UITheme.bgImage),
         width: double.infinity,
         child: SafeArea(
           child: FutureBuilder<List<MovieRecord>>(

@@ -19,7 +19,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final UITheme theme = UITheme.instance;
   final FirebaseAuthService auth = FirebaseAuthService();
   late final MovieProvider movieProvider;
   late final MovieController movieController;
@@ -53,9 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: theme.bgColor, title: Text("WELCOME")),
+      appBar: AppBar(backgroundColor: UITheme.bgColor, title: Text("WELCOME")),
       drawer: Drawer(
-        backgroundColor: theme.bgColor.withValues(alpha: 0.8),
+        backgroundColor: UITheme.bgColor.withValues(alpha: 0.8),
         width: 200,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -111,12 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/bg1.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: BoxDecoration(image: UITheme.bgImage),
         width: double.infinity,
         child: SafeArea(
           child: Column(

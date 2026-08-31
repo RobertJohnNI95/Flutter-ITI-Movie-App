@@ -17,7 +17,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final UITheme theme = UITheme.instance;
   final TextEditingController _searchController = TextEditingController();
   late final MovieController movieController;
   List<MovieRecord> _filteredMovies = [];
@@ -45,7 +44,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.bgColor,
+        backgroundColor: UITheme.bgColor,
         title: Text("${_searchController.text} SEARCH RESULTS"),
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
@@ -53,12 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/bg1.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: BoxDecoration(image: UITheme.bgImage),
         width: double.infinity,
         child: SafeArea(
           child: ChangeNotifierProvider.value(

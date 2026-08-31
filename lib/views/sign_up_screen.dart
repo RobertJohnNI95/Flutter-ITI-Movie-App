@@ -15,8 +15,6 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final UITheme theme = UITheme.instance;
-
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
   bool obscurePass = true;
@@ -77,14 +75,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: theme.bgColor, title: Text("SIGN UP")),
+      appBar: AppBar(backgroundColor: UITheme.bgColor, title: Text("SIGN UP")),
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/bg1.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: BoxDecoration(image: UITheme.bgImage),
         width: double.infinity,
 
         child: Column(

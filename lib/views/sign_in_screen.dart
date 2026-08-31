@@ -14,7 +14,6 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final UITheme theme = UITheme.instance;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
   bool obscurePass = true;
@@ -70,15 +69,10 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: theme.bgColor, title: Text("SIGN IN")),
+      appBar: AppBar(backgroundColor: UITheme.bgColor, title: Text("SIGN IN")),
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/bg1.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: BoxDecoration(image: UITheme.bgImage),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

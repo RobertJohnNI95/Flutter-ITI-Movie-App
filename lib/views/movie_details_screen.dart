@@ -4,14 +4,13 @@ import "package:flutter_iti_movie_app/utils/theme.dart";
 
 class MovieDetailsScreen extends StatelessWidget {
   MovieDetailsScreen({super.key, required this.movie});
-  final UITheme theme = UITheme.instance;
   final MovieRecord movie;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.bgColor,
+        backgroundColor: UITheme.bgColor,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -24,12 +23,7 @@ class MovieDetailsScreen extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/bg1.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: BoxDecoration(image: UITheme.bgImage),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -67,41 +61,6 @@ class MovieDetailsScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class RatingStars extends StatefulWidget {
-  final double stars;
-  const RatingStars({super.key, required this.stars});
-
-  @override
-  State<RatingStars> createState() => _RatingStarsState();
-}
-
-class _RatingStarsState extends State<RatingStars> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        (widget.stars >= 1)
-            ? Icon(Icons.star, color: Colors.amber)
-            : Icon(Icons.star_border_outlined, color: Colors.amber),
-        (widget.stars >= 2)
-            ? Icon(Icons.star, color: Colors.amber)
-            : Icon(Icons.star_border_outlined, color: Colors.amber),
-        (widget.stars >= 3)
-            ? Icon(Icons.star, color: Colors.amber)
-            : Icon(Icons.star_border_outlined, color: Colors.amber),
-        (widget.stars >= 4)
-            ? Icon(Icons.star, color: Colors.amber)
-            : Icon(Icons.star_border_outlined, color: Colors.amber),
-        (widget.stars >= 5)
-            ? Icon(Icons.star, color: Colors.amber)
-            : Icon(Icons.star_border_outlined, color: Colors.amber),
-      ],
     );
   }
 }
