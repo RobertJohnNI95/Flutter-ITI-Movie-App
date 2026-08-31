@@ -17,6 +17,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   bool obscurePass = true;
   bool _isLoading = false;
   final FirebaseAuthService auth = FirebaseAuthService();
@@ -24,11 +25,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> signUp() async {
     final String email = emailController.text;
     final String pass = passController.text;
+    final String name = nameController.text;
 
-    if (email.isEmpty || pass.isEmpty) {
+    if (email.isEmpty || pass.isEmpty || name.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Empty email or password field.")));
+      ).showSnackBar(SnackBar(content: Text("Empty field(s).")));
       return;
     }
 
@@ -47,7 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
 
     try {
-      await auth.signUp(email: email, password: pass);
+      await auth.signUp(email: email, password: pass, username: name);
       Navigator.pushReplacement(
         // ignore: use_build_context_synchronously
         context,
@@ -118,7 +120,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ],
                 ),
                 SizedBox(height: 10),
-
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.person),
+                      labelText: "Username",
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextField(
@@ -138,7 +151,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     obscureText: obscurePass,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.password),
+                      prefixIcon: Icon(Icons.lock),
                       labelText: "Password",
                       suffixIcon: IconButton(
                         icon: (obscurePass)

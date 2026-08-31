@@ -1,3 +1,4 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 
 class FirebaseAuthService {
@@ -18,16 +19,50 @@ class FirebaseAuthService {
   Future<UserCredential> signUp({
     required String email,
     required String password,
+    required String username,
   }) async {
-    return await _auth.createUserWithEmailAndPassword(
+    final userCredential = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
+
+    final uid = userCredential.user?.uid;
+    if (uid == null) {
+      throw FirebaseException(
+        plugin: 'firebase_auth',
+        code: 'user-not-created',
+        message: 'User was not created successfully.',
+      );
+    }
+
+    await FirebaseFirestore.instance.collection('users').doc(uid).set({
+      'uid': uid,
+      'username': username,
+      'email': email,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    return userCredential;
   }
 
   // Sign out
   Future<void> signOut() async {
     return _auth.signOut();
+  }
+
+  // Get User Details
+  Future<Map<String, dynamic>?> getUserDetails() async {
+    final user = _auth.currentUser;
+    if (user == null) return null;
+
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    if (doc.exists) return doc.data();
+
+    return null;
   }
 
   // Get Current user

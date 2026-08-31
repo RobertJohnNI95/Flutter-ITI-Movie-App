@@ -3,6 +3,7 @@ import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
 import "package:flutter_iti_movie_app/utils/theme.dart";
 import "package:flutter_iti_movie_app/views/favorites_screen.dart";
 import "package:flutter_iti_movie_app/views/home_screen.dart";
+import "package:flutter_iti_movie_app/views/profile_screen.dart";
 import "package:flutter_iti_movie_app/views/sign_in_screen.dart";
 import "package:flutter_iti_movie_app/widgets/wide_button.dart";
 
@@ -61,6 +62,24 @@ class MovieAppDrawer extends StatelessWidget {
             ),
             SizedBox(height: 5),
             Divider(),
+            SizedBox(height: 5),
+
+            WideButton(
+              bgColor: (currentPage == 'profile') ? Colors.teal : null,
+              textColor: (currentPage == 'profile') ? Colors.white : null,
+              buttonLabel: "Profile",
+              icon: Icons.person,
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ProfileScreen(user: auth.currentUser),
+                  ),
+                );
+              },
+            ),
+            SizedBox(height: 5),
+
             WideButton(
               buttonLabel: "Sign Out",
               onPressed: () async {
