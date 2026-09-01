@@ -18,7 +18,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController passController = TextEditingController();
   bool obscurePass = true;
   bool _isLoading = false;
-  final FirebaseAuthService auth = FirebaseAuthService();
+  final FirebaseAuthService _auth = FirebaseAuthService();
   final _formKey = GlobalKey<FormState>();
   final FocusNode passFocusNode = FocusNode();
 
@@ -38,12 +38,12 @@ class _SignInScreenState extends State<SignInScreen> {
     });
 
     try {
-      await auth.signIn(email: email, password: pass);
+      await _auth.signIn(email: email, password: pass);
       Navigator.pushReplacement(
         // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(
-          builder: (_) => HomeScreen(userId: auth.currentUser!.uid),
+          builder: (_) => HomeScreen(userId: _auth.currentUser!.uid),
         ),
       );
     } on FirebaseAuthException catch (error) {

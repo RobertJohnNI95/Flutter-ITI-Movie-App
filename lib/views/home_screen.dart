@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_iti_movie_app/controllers/movie_controller.dart";
 import "package:flutter_iti_movie_app/providers/movie_provider.dart";
-import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
 import "package:flutter_iti_movie_app/views/search_screen.dart";
 import "package:flutter_iti_movie_app/widgets/movie_app_drawer.dart";
 import "package:flutter_iti_movie_app/widgets/movie_card.dart";
@@ -17,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final FirebaseAuthService auth = FirebaseAuthService();
   late final MovieProvider movieProvider;
   late final MovieController movieController;
   String? _loadError;
