@@ -130,7 +130,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     obscureText: obscurePass,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.password),
+                      prefixIcon: Icon(Icons.lock),
                       labelText: "Password",
                       suffixIcon: IconButton(
                         icon: (obscurePass)
