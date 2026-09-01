@@ -2,17 +2,20 @@ import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter_iti_movie_app/models/movie_record.dart";
 import "package:flutter_iti_movie_app/services/favorite_cloud_service.dart";
+import "package:flutter_iti_movie_app/services/watched_cloud_service.dart";
 import "package:flutter_iti_movie_app/views/movie_details_screen.dart";
 
 class MovieCard extends StatefulWidget {
-  const MovieCard({super.key, required this.movie});
+  const MovieCard({super.key, required this.movie, this.longPressFunc});
   final MovieRecord movie;
+  final VoidCallback? longPressFunc;
 
   @override
   State<MovieCard> createState() => _MovieCardState();
 }
 
 class _MovieCardState extends State<MovieCard> {
+  bool _isWatched = false;
   bool _isFavorite = false;
   bool _isLoading = true;
 
@@ -20,6 +23,7 @@ class _MovieCardState extends State<MovieCard> {
   void initState() {
     super.initState();
     _loadFavoriteState();
+    _loadWatchedState();
   }
 
   Future<void> _loadFavoriteState() async {
@@ -99,6 +103,59 @@ class _MovieCardState extends State<MovieCard> {
     }
   }
 
+  Future<void> _loadWatchedState() async {
+    final String? userId = FirebaseAuth.instance.currentUser?.uid;
+    final int? movieId = widget.movie.id;
+
+    if (userId == null || movieId == null) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+      return;
+    }
+
+    final bool watched = await WatchedCloudService().isWatched(userId, movieId);
+
+    if (mounted) {
+      setState(() {
+        _isWatched = watched;
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _removeMovieFromWatched() async {
+    final String? userId = FirebaseAuth.instance.currentUser?.uid;
+    final int? movieId = widget.movie.id;
+
+    if (userId == null || movieId == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please sign in first")));
+      return;
+    }
+
+    try {
+      if (_isWatched) {
+        await WatchedCloudService().deleteWatchedMovie(
+          userId,
+          widget.movie.id!,
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          if (_isWatched) _isWatched = true;
+          _isLoading = false;
+        });
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error removing video: $error")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -110,6 +167,7 @@ class _MovieCardState extends State<MovieCard> {
           ),
         );
       },
+      onLongPress: widget.longPressFunc,
       child: Card(
         color: Colors.blueAccent.withValues(alpha: 0.3),
         elevation: 5,
@@ -163,6 +221,24 @@ class _MovieCardState extends State<MovieCard> {
                 padding: EdgeInsets.only(top: 4, bottom: 8),
                 child: _isLoading
                     ? CircularProgressIndicator()
+                    : _isWatched
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            onPressed: _toggleFavorite,
+                            icon: Icon(
+                              _isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_outline,
+                              color: _isFavorite ? Colors.red : Colors.black,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Icon(Icons.movie, color: Colors.lime),
+                        ],
+                      )
                     : IconButton(
                         onPressed: _toggleFavorite,
                         icon: Icon(

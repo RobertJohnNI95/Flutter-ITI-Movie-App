@@ -15,13 +15,14 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  final FirebaseAuthService auth = FirebaseAuthService();
   late final Stream<List<MovieRecord>> _favoriteMoviesStream;
 
   @override
   void initState() {
     super.initState();
-    _favoriteMoviesStream = FavoriteCloudService().favoritesStream(widget.userId);
+    _favoriteMoviesStream = FavoriteCloudService().favoritesStream(
+      widget.userId,
+    );
   }
 
   @override

@@ -1,10 +1,77 @@
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:flutter_iti_movie_app/models/movie_record.dart";
+import "package:flutter_iti_movie_app/services/watched_cloud_service.dart";
 import "package:flutter_iti_movie_app/utils/theme.dart";
+import "package:flutter_iti_movie_app/widgets/wide_button.dart";
 
-class MovieDetailsScreen extends StatelessWidget {
+class MovieDetailsScreen extends StatefulWidget {
   MovieDetailsScreen({super.key, required this.movie});
   final MovieRecord movie;
+
+  @override
+  State<MovieDetailsScreen> createState() => _MovieDetailsScreenState();
+}
+
+class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
+  bool _isWatched = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWatchedState();
+  }
+
+  Future<void> _loadWatchedState() async {
+    final String? userId = FirebaseAuth.instance.currentUser?.uid;
+    final int? movieId = widget.movie.id;
+
+    if (userId == null || movieId == null) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+      return;
+    }
+
+    final bool watched = await WatchedCloudService().isWatched(userId, movieId);
+
+    if (mounted) {
+      setState(() {
+        _isWatched = watched;
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _watchMovie() async {
+    final String? userId = FirebaseAuth.instance.currentUser?.uid;
+    final int? movieId = widget.movie.id;
+
+    if (userId == null || movieId == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please sign in first")));
+      return;
+    }
+
+    try {
+      if (!_isWatched) {
+        await WatchedCloudService().addWatchedMovie(userId, widget.movie);
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          if (!_isWatched) _isWatched = false;
+          _isLoading = false;
+        });
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error playing video: $error")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +84,10 @@ class MovieDetailsScreen extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text(movie.title, style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          widget.movie.title,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
       body: Container(
@@ -33,10 +103,10 @@ class MovieDetailsScreen extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.all(10),
-                  child: movie.posterPath == null
+                  child: widget.movie.posterPath == null
                       ? Icon(Icons.movie, size: 48)
                       : Image.network(
-                          "https://image.tmdb.org/t/p/w500${movie.posterPath}",
+                          "https://image.tmdb.org/t/p/w500${widget.movie.posterPath}",
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               Icon(Icons.broken_image, size: 48),
@@ -47,15 +117,25 @@ class MovieDetailsScreen extends StatelessWidget {
                 // RatingStars(stars: movie.voteAverage),
                 SizedBox(height: 5),
                 Text(
-                  "Release Date: ${movie.releaseDate ?? "Unknown"}",
+                  "Release Date: ${widget.movie.releaseDate ?? "Unknown"}",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 5),
                 Text(
-                  movie.overview ?? "No Description",
+                  widget.movie.overview ?? "No Description",
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                   textAlign: TextAlign.justify,
                 ),
+                SizedBox(height: 10),
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : WideButton(
+                        onPressed: _watchMovie,
+                        buttonLabel: _isWatched ? "Watch Again" : "Watch",
+                        icon: Icons.play_arrow,
+                        bgColor: _isWatched ? Colors.teal : Colors.blueAccent,
+                        textColor: Colors.white,
+                      ),
               ],
             ),
           ),
