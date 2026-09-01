@@ -2,8 +2,8 @@ import "package:sqflite/sqflite.dart";
 import "package:path/path.dart";
 import "package:flutter_iti_movie_app/models/movie_record.dart";
 
-class FavoritesDBService {
-  static final FavoritesDBService instance = FavoritesDBService();
+class WatchedDBService {
+  static final WatchedDBService instance = WatchedDBService();
   Database? _database;
 
   // MARK:- Get Database
@@ -19,7 +19,7 @@ class FavoritesDBService {
   // MARK:- Initialize
   Future<Database> _initDatabase() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, "favorite.db");
+    final path = join(dbPath, "watched.db");
 
     return openDatabase(path, version: 1, onCreate: _createDatabase);
   }
@@ -27,7 +27,7 @@ class FavoritesDBService {
   // MARK:- Create Database
   Future<void> _createDatabase(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE favorites (
+      CREATE TABLE watched (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         movie_id INTEGER NOT NULL,
         user_id TEXT NOT NULL,
@@ -42,10 +42,10 @@ class FavoritesDBService {
     ''');
   }
 
-  // MARK:- Insert Favorite
-  Future<int> insertFavorite(MovieRecord movie, String userId) async {
+  // MARK:- Insert Watched Movie
+  Future<int> insertWatchedMovie(MovieRecord movie, String userId) async {
     final db = await database;
-    return db.insert("favorites", {
+    return db.insert("watched", {
       'movie_id': movie.id,
       'user_id': userId,
       'title': movie.title,
@@ -57,11 +57,11 @@ class FavoritesDBService {
     }, conflictAlgorithm: ConflictAlgorithm.ignore);
   }
 
-  // MARK:- Get Favorites
-  Future<List<MovieRecord>> getFavorites(String userId) async {
+  // MARK:- Get Watched Movies
+  Future<List<MovieRecord>> getWatchedMovies(String userId) async {
     final db = await database;
     final rows = await db.query(
-      "favorites",
+      "watched",
       where: 'user_id = ?',
       whereArgs: [userId],
       orderBy: "title COLLATE NOCASE",
@@ -81,11 +81,11 @@ class FavoritesDBService {
         .toList();
   }
 
-  // MARK:- Check if movie is user's favorite
-  Future<bool> isFavorite(int movieId, String userId) async {
+  // MARK:- Check if movie watched by user
+  Future<bool> isWatched(int movieId, String userId) async {
     final db = await database;
     final result = await db.query(
-      'favorites',
+      'watched',
       where: 'movie_id = ? AND user_id = ?',
       whereArgs: [movieId, userId],
       limit: 1,
@@ -93,11 +93,11 @@ class FavoritesDBService {
     return result.isNotEmpty;
   }
 
-  // MARK:- Remove Favorite
-  Future<int> deleteFavorite(int movieId, String userId) async {
+  // MARK:- Remove Movie From Watched Movies List
+  Future<int> deleteWatchedMovie(int movieId, String userId) async {
     final db = await database;
     return db.delete(
-      "favorites",
+      "watched",
       where: "movie_id = ? AND user_id = ?",
       whereArgs: [movieId, userId],
     );

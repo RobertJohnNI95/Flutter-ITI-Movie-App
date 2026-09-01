@@ -5,6 +5,7 @@ import "package:flutter_iti_movie_app/views/favorites_screen.dart";
 import "package:flutter_iti_movie_app/views/home_screen.dart";
 import "package:flutter_iti_movie_app/views/profile_screen.dart";
 import "package:flutter_iti_movie_app/views/sign_in_screen.dart";
+import "package:flutter_iti_movie_app/views/watched_screen.dart";
 import "package:flutter_iti_movie_app/widgets/wide_button.dart";
 
 class MovieAppDrawer extends StatelessWidget {
@@ -56,14 +57,21 @@ class MovieAppDrawer extends StatelessWidget {
             WideButton(
               bgColor: (currentPage == 'watched') ? Colors.teal : null,
               textColor: (currentPage == 'watched') ? Colors.white : null,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        WatchedScreen(userId: auth.currentUser!.uid),
+                  ),
+                );
+              },
               buttonLabel: "Watched Movies",
               icon: Icons.movie,
             ),
             SizedBox(height: 5),
             Divider(),
             SizedBox(height: 5),
-
             WideButton(
               bgColor: (currentPage == 'profile') ? Colors.teal : null,
               textColor: (currentPage == 'profile') ? Colors.white : null,
@@ -79,7 +87,6 @@ class MovieAppDrawer extends StatelessWidget {
               },
             ),
             SizedBox(height: 5),
-
             WideButton(
               buttonLabel: "Sign Out",
               onPressed: () async {

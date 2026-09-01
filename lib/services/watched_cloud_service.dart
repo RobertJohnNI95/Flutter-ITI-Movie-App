@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_iti_movie_app/database/favorites_db_service.dart';
+import 'package:flutter_iti_movie_app/database/watched_db_service.dart';
 import 'package:flutter_iti_movie_app/models/movie_record.dart';
 
-class FavoriteCloudService {
+class WatchedCloudService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<T> _runWithFallback<T>({
@@ -23,13 +23,13 @@ class FavoriteCloudService {
     }
   }
 
-  Future<void> addFavorite(String userId, MovieRecord movie) async {
+  Future<void> addWatchedMovie(String userId, MovieRecord movie) async {
     await _runWithFallback<void>(
       remote: () async {
         await _db
             .collection('users')
             .doc(userId)
-            .collection('favorites')
+            .collection('watched')
             .doc(movie.id.toString())
             .set({
               'movieId': movie.id,
@@ -44,13 +44,13 @@ class FavoriteCloudService {
         return;
       },
       local: () async {
-        await FavoritesDBService.instance.insertFavorite(movie, userId);
+        await WatchedDBService.instance.insertWatchedMovie(movie, userId);
         return;
       },
     );
   }
 
-  List<MovieRecord> _mapFavoriteDocs(
+  List<MovieRecord> _mapWatchedDocs(
     List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
   ) {
     return docs.map((doc) {
@@ -68,59 +68,59 @@ class FavoriteCloudService {
     }).toList();
   }
 
-  Future<List<MovieRecord>> getFavorites(String userId) async {
+  Future<List<MovieRecord>> getWatchedMovies(String userId) async {
     return _runWithFallback<List<MovieRecord>>(
       remote: () async {
         final snapshot = await _db
             .collection('users')
             .doc(userId)
-            .collection('favorites')
+            .collection('watched')
             .get();
 
-        return _mapFavoriteDocs(snapshot.docs);
+        return _mapWatchedDocs(snapshot.docs);
       },
-      local: () => FavoritesDBService.instance.getFavorites(userId),
+      local: () => WatchedDBService.instance.getWatchedMovies(userId),
     );
   }
 
-  Stream<List<MovieRecord>> favoritesStream(String userId) {
+  Stream<List<MovieRecord>> watchedMovieStream(String userId) {
     return _db
         .collection('users')
         .doc(userId)
-        .collection('favorites')
+        .collection('watched')
         .snapshots()
-        .map((snapshot) => _mapFavoriteDocs(snapshot.docs));
+        .map((snapshot) => _mapWatchedDocs(snapshot.docs));
   }
 
-  Future<bool> isFavorite(String userId, int movieId) async {
+  Future<bool> isWatched(String userId, int movieId) async {
     return _runWithFallback<bool>(
       remote: () async {
         final doc = await _db
             .collection('users')
             .doc(userId)
-            .collection('favorites')
+            .collection('watched')
             .doc(movieId.toString())
             .get();
 
         return doc.exists;
       },
-      local: () => FavoritesDBService.instance.isFavorite(movieId, userId),
+      local: () => WatchedDBService.instance.isWatched(movieId, userId),
     );
   }
 
-  Future<void> deleteFavorite(String userId, int movieId) async {
+  Future<void> deleteWatchedMovie(String userId, int movieId) async {
     await _runWithFallback<void>(
       remote: () async {
         await _db
             .collection('users')
             .doc(userId)
-            .collection('favorites')
+            .collection('watched')
             .doc(movieId.toString())
             .delete();
         return;
       },
       local: () async {
-        await FavoritesDBService.instance.deleteFavorite(movieId, userId);
+        await WatchedDBService.instance.deleteWatchedMovie(movieId, userId);
         return;
       },
     );
