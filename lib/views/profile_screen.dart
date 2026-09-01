@@ -1,6 +1,6 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
-import "package:flutter_iti_movie_app/main.dart";
 import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
 import "package:flutter_iti_movie_app/utils/theme.dart";
 import "package:flutter_iti_movie_app/views/sign_in_screen.dart";
@@ -18,6 +18,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final FirebaseAuthService _auth = FirebaseAuthService();
   late Future<Map<String, dynamic>?> _userFuture;
+  final TextEditingController nameController = TextEditingController();
 
   @override
   void initState() {
@@ -40,78 +41,116 @@ class _ProfileScreenState extends State<ProfileScreen> {
               return const Center(child: CircularProgressIndicator());
             }
 
-            final username = snapshot.data!['username'];
-            final email = snapshot.data!['email'];
+            if (snapshot.hasError ||
+                !snapshot.hasData ||
+                snapshot.data == null) {
+              return const Center(child: Text("Could not load profile"));
+            }
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+            final username = snapshot.data?['username'] as String? ?? "";
+            final email = snapshot.data?['email'] as String? ?? "No email";
+
+            if (nameController.text.isEmpty && username.isNotEmpty) {
+              nameController.text = username;
+            }
+
+            return SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: UITheme.bgColor,
+                          radius: 50,
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 60,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: TextField(
+                            controller: nameController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                            ),
+                            style: TextStyle(
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          email,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
                     children: [
-                      CircleAvatar(
-                        backgroundColor: UITheme.bgColor,
-                        radius: 50,
-                        child: Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 60,
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: WideButton(
+                          onPressed: () async {
+                            final newUsername = nameController.text.trim();
+                            final uid = _auth.currentUser?.uid;
+
+                            if (uid == null || newUsername.isEmpty) {
+                              return;
+                            }
+
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(uid)
+                                .set({
+                                  'email': email,
+                                  'username': newUsername,
+                                }, SetOptions(merge: true));
+
+                            if (mounted) {
+                              setState(() {
+                                _userFuture = _auth.getUserDetails();
+                              });
+                            }
+                          },
+                          buttonLabel: "Save Username",
+                          icon: Icons.save,
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        username,
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        email,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: WideButton(
+                          onPressed: () async {
+                            await _auth.signOut();
+                            Navigator.pushReplacement(
+                              // ignore: use_build_context_synchronously
+                              context,
+                              MaterialPageRoute(builder: (_) => SignInScreen()),
+                            );
+                          },
+                          buttonLabel: "Sign Out",
+                          icon: Icons.logout,
+                          bgColor: Colors.red,
+                          textColor: Colors.white,
                         ),
                       ),
                     ],
                   ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: WideButton(
-                        onPressed: () {},
-                        buttonLabel: "Edit",
-                        icon: Icons.edit,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: WideButton(
-                        onPressed: () async {
-                          await _auth.signOut();
-                          Navigator.pushReplacement(
-                            // ignore: use_build_context_synchronously
-                            context,
-                            MaterialPageRoute(builder: (_) => SignInScreen()),
-                          );
-                        },
-                        buttonLabel: "Sign Out",
-                        icon: Icons.logout,
-                        bgColor: Colors.red,
-                        textColor: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             );
           }),
         ),
