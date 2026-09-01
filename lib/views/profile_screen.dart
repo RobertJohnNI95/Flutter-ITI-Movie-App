@@ -149,6 +149,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             await _auth.signOut();
                             if (mounted) {
                               Navigator.pushReplacement(
+                                // ignore: use_build_context_synchronously
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => SignInScreen(),

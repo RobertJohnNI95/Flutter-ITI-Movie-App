@@ -103,6 +103,7 @@ class _MovieCardState extends State<MovieCard> {
         });
       }
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Could not update favorite: $error")),
       );

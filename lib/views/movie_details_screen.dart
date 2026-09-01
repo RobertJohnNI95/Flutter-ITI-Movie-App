@@ -6,7 +6,7 @@ import "package:flutter_iti_movie_app/utils/theme.dart";
 import "package:flutter_iti_movie_app/widgets/wide_button.dart";
 
 class MovieDetailsScreen extends StatefulWidget {
-  MovieDetailsScreen({super.key, required this.movie});
+  const MovieDetailsScreen({super.key, required this.movie});
   final MovieRecord movie;
 
   @override
@@ -83,6 +83,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
       }
 
       ScaffoldMessenger.of(
+        // ignore: use_build_context_synchronously
         context,
       ).showSnackBar(SnackBar(content: Text("Error watching movie: $error")));
     }
