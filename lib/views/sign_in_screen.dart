@@ -19,6 +19,8 @@ class _SignInScreenState extends State<SignInScreen> {
   bool obscurePass = true;
   bool _isLoading = false;
   final FirebaseAuthService auth = FirebaseAuthService();
+  final _formKey = GlobalKey<FormState>();
+  final FocusNode passFocusNode = FocusNode();
 
   Future<void> signIn() async {
     final String email = emailController.text;
@@ -80,93 +82,99 @@ class _SignInScreenState extends State<SignInScreen> {
             constraints: BoxConstraints(
               minHeight: MediaQuery.of(context).size.height - 120,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.asset("assets/app_logo_2.png", scale: 10),
-                ),
-                Text(
-                  "Sign in to your account",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "If you don't have an account, ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => SignUpScreen()),
-                        );
-                      },
-                      child: Text(
-                        "sign up.",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.deepPurple.shade900,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.email),
-                      labelText: "Email",
-                    ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Image.asset("assets/app_logo_2.png", scale: 10),
                   ),
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextField(
-                    controller: passController,
-                    obscureText: obscurePass,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock),
-                      labelText: "Password",
-                      suffixIcon: IconButton(
-                        icon: (obscurePass)
-                            ? Icon(Icons.visibility)
-                            : Icon(Icons.visibility_off),
+                  Text(
+                    "Sign in to your account",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "If you don't have an account, ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
                         onPressed: () {
-                          setState(() {
-                            obscurePass = !obscurePass;
-                          });
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => SignUpScreen()),
+                          );
                         },
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: _isLoading
-                      ? CircularProgressIndicator(strokeWidth: 2)
-                      : WideButton(
-                          onPressed: signIn,
-                          buttonLabel: "SIGN IN",
+                        child: Text(
+                          "sign up.",
                           style: TextStyle(
-                            fontSize: 15,
                             fontWeight: FontWeight.bold,
+                            color: Colors.deepPurple.shade900,
                           ),
                         ),
-                ),
-              ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: TextFormField(
+                      // textInputAction: TextInputAction.next,
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.email),
+                        labelText: "Email",
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: TextFormField(
+                      textInputAction: TextInputAction.go,
+                      onFieldSubmitted: (_) => signIn(),
+                      controller: passController,
+                      obscureText: obscurePass,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.lock),
+                        labelText: "Password",
+                        suffixIcon: IconButton(
+                          icon: (obscurePass)
+                              ? Icon(Icons.visibility)
+                              : Icon(Icons.visibility_off),
+                          onPressed: () {
+                            setState(() {
+                              obscurePass = !obscurePass;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: _isLoading
+                        ? CircularProgressIndicator(strokeWidth: 2)
+                        : WideButton(
+                            onPressed: signIn,
+                            buttonLabel: "SIGN IN",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

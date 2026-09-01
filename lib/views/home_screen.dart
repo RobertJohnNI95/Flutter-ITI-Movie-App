@@ -65,7 +65,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: TextField(
+                      child: TextFormField(
+                        textInputAction: TextInputAction.search,
+                        onFieldSubmitted: (_) {
+                          final query = searchController.text.trim();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SearchScreen(
+                                movieProvider: movieProvider,
+                                searchWord: query,
+                              ),
+                            ),
+                          );
+                        },
                         controller: searchController,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.search),
