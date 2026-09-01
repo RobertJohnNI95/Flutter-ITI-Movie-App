@@ -27,80 +27,92 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(backgroundColor: UITheme.bgColor, title: Text("PROFILE")),
       drawer: MovieAppDrawer(currentPage: 'profile'),
-      body: Container(
-        decoration: BoxDecoration(image: UITheme.bgImage),
-        width: double.infinity,
-        child: FutureBuilder<Map<String, dynamic>?>(
-          future: _userFuture,
-          builder: ((context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(image: UITheme.bgImage),
+          width: double.infinity,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height - 120,
+              ),
+              child: FutureBuilder<Map<String, dynamic>?>(
+                future: _userFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError ||
+                      !snapshot.hasData ||
+                      snapshot.data == null) {
+                    return const Center(child: Text("Could not load profile"));
+                  }
 
-            if (snapshot.hasError ||
-                !snapshot.hasData ||
-                snapshot.data == null) {
-              return const Center(child: Text("Could not load profile"));
-            }
+                  final userData = snapshot.data!;
+                  final username = (userData['username'] as String?) ?? "";
+                  final email = (userData['email'] as String?) ?? "No email";
 
-            final username = snapshot.data?['username'] as String? ?? "";
-            final email = snapshot.data?['email'] as String? ?? "No email";
+                  if (nameController.text.isEmpty && username.isNotEmpty) {
+                    nameController.text = username;
+                  }
 
-            if (nameController.text.isEmpty && username.isNotEmpty) {
-              nameController.text = username;
-            }
-
-            return SafeArea(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: UITheme.bgColor,
-                          radius: 50,
-                          child: Icon(
-                            Icons.person,
-                            color: Colors.white,
-                            size: 60,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: TextField(
-                            controller: nameController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                            ),
-                            style: TextStyle(
-                              fontSize: 35,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          email,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      CircleAvatar(
+                        backgroundColor: UITheme.bgColor,
+                        radius: 50,
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 60,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: TextField(
+                          controller: nameController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            suffixIcon: Icon(Icons.edit),
+                          ),
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.email),
+                          SizedBox(width: 5),
+                          Text(
+                            email,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: WideButton(
@@ -135,11 +147,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: WideButton(
                           onPressed: () async {
                             await _auth.signOut();
-                            Navigator.pushReplacement(
-                              // ignore: use_build_context_synchronously
-                              context,
-                              MaterialPageRoute(builder: (_) => SignInScreen()),
-                            );
+                            if (mounted) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => SignInScreen(),
+                                ),
+                              );
+                            }
                           },
                           buttonLabel: "Sign Out",
                           icon: Icons.logout,
@@ -148,11 +163,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ],
-                  ),
-                ],
+                  );
+                },
               ),
-            );
-          }),
+            ),
+          ),
         ),
       ),
     );

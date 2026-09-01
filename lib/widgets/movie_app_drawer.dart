@@ -19,89 +19,96 @@ class MovieAppDrawer extends StatelessWidget {
       backgroundColor: UITheme.bgColor.withValues(alpha: 0.8),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 100),
-            WideButton(
-              bgColor: (currentPage == 'home') ? Colors.teal : null,
-              textColor: (currentPage == 'home') ? Colors.white : null,
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => HomeScreen(userId: auth.currentUser!.uid),
-                  ),
-                );
-              },
-              buttonLabel: "Home",
-              icon: Icons.home,
-            ),
-            SizedBox(height: 5),
-            WideButton(
-              bgColor: (currentPage == 'favorites') ? Colors.teal : null,
-              textColor: (currentPage == 'favorites') ? Colors.white : null,
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        FavoritesScreen(userId: auth.currentUser!.uid),
-                  ),
-                );
-              },
-              buttonLabel: "Favorite Movies",
-              icon: Icons.favorite,
-            ),
-            SizedBox(height: 5),
-            WideButton(
-              bgColor: (currentPage == 'watched') ? Colors.teal : null,
-              textColor: (currentPage == 'watched') ? Colors.white : null,
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        WatchedScreen(userId: auth.currentUser!.uid),
-                  ),
-                );
-              },
-              buttonLabel: "Watched Movies",
-              icon: Icons.movie,
-            ),
-            SizedBox(height: 5),
-            Divider(),
-            SizedBox(height: 5),
-            WideButton(
-              bgColor: (currentPage == 'profile') ? Colors.teal : null,
-              textColor: (currentPage == 'profile') ? Colors.white : null,
-              buttonLabel: "Profile",
-              icon: Icons.person,
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ProfileScreen(user: auth.currentUser),
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: 5),
-            WideButton(
-              buttonLabel: "Sign Out",
-              onPressed: () async {
-                await auth.signOut();
-                Navigator.pushReplacement(
-                  // ignore: use_build_context_synchronously
-                  context,
-                  MaterialPageRoute(builder: (_) => SignInScreen()),
-                );
-              },
-              bgColor: Colors.red,
-              textColor: Colors.white,
-              icon: Icons.logout,
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 30),
+              Image.asset("assets/app_logo.png"),
+              SizedBox(height: 30),
+              WideButton(
+                bgColor: (currentPage == 'profile') ? Colors.teal : null,
+                textColor: (currentPage == 'profile') ? Colors.white : null,
+                buttonLabel: "Profile",
+                icon: Icons.person,
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ProfileScreen(user: auth.currentUser),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 5),
+              Divider(),
+              SizedBox(height: 5),
+              WideButton(
+                bgColor: (currentPage == 'home') ? Colors.teal : null,
+                textColor: (currentPage == 'home') ? Colors.white : null,
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => HomeScreen(userId: auth.currentUser!.uid),
+                    ),
+                  );
+                },
+                buttonLabel: "Home",
+                icon: Icons.home,
+              ),
+              SizedBox(height: 5),
+              WideButton(
+                bgColor: (currentPage == 'favorites') ? Colors.teal : null,
+                textColor: (currentPage == 'favorites') ? Colors.white : null,
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          FavoritesScreen(userId: auth.currentUser!.uid),
+                    ),
+                  );
+                },
+                buttonLabel: "Favorite Movies",
+                icon: Icons.favorite,
+              ),
+              SizedBox(height: 5),
+              WideButton(
+                bgColor: (currentPage == 'watched') ? Colors.teal : null,
+                textColor: (currentPage == 'watched') ? Colors.white : null,
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          WatchedScreen(userId: auth.currentUser!.uid),
+                    ),
+                  );
+                },
+                buttonLabel: "Watched Movies",
+                icon: Icons.movie,
+              ),
+              SizedBox(height: 5),
+              Divider(),
+              SizedBox(height: 5),
+              SizedBox(height: 5),
+              WideButton(
+                buttonLabel: "Sign Out",
+                onPressed: () async {
+                  await auth.signOut();
+                  Navigator.pushReplacement(
+                    // ignore: use_build_context_synchronously
+                    context,
+                    MaterialPageRoute(builder: (_) => SignInScreen()),
+                  );
+                },
+                bgColor: Colors.red,
+                textColor: Colors.white,
+                icon: Icons.logout,
+              ),
+            ],
+          ),
         ),
       ),
     );

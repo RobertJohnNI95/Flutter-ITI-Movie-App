@@ -77,112 +77,127 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(backgroundColor: UITheme.bgColor, title: Text("SIGN UP")),
       body: Container(
         decoration: BoxDecoration(image: UITheme.bgImage),
         width: double.infinity,
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Column(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height - 120,
+            ),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  "Create new account",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10),
-                Row(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      "If you already have an account, ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Image.asset("assets/app_logo_2.png", scale: 10),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => SignInScreen()),
-                        );
-                      },
-                      child: Text(
-                        "sign in.",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.deepPurple.shade900,
+                    Text(
+                      "Create new account",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "If you already have an account, ",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (_) => SignInScreen()),
+                            );
+                          },
+                          child: Text(
+                            "sign in.",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepPurple.shade900,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: TextField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.person),
+                          labelText: "Username",
                         ),
                       ),
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.email),
+                          labelText: "Email",
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: TextField(
+                        controller: passController,
+                        obscureText: obscurePass,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.lock),
+                          labelText: "Password",
+                          suffixIcon: IconButton(
+                            icon: (obscurePass)
+                                ? Icon(Icons.visibility)
+                                : Icon(Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                obscurePass = !obscurePass;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: _isLoading
+                          ? CircularProgressIndicator(strokeWidth: 2)
+                          : WideButton(
+                              onPressed: signUp,
+                              buttonLabel: "SIGN UP",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.person),
-                      labelText: "Username",
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.email),
-                      labelText: "Email",
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextField(
-                    controller: passController,
-                    obscureText: obscurePass,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.lock),
-                      labelText: "Password",
-                      suffixIcon: IconButton(
-                        icon: (obscurePass)
-                            ? Icon(Icons.visibility)
-                            : Icon(Icons.visibility_off),
-                        onPressed: () {
-                          setState(() {
-                            obscurePass = !obscurePass;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: _isLoading
-                      ? CircularProgressIndicator(strokeWidth: 2)
-                      : WideButton(
-                          onPressed: signUp,
-                          buttonLabel: "SIGN UP",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -3,12 +3,12 @@ flutter_native_splash:
   ios: true
 
   color: "#ffffff"
-  image: "assets/ITI_Logo.png"
+  image: "assets/app_logo.png"
   color_dark: "#000000"
-  image_dark: "assets/ITI_Logo.png"
+  image_dark: "assets/app_logo.png"
 
   android_12:
     color: "#ffffff"
-    image: "assets/ITI_Logo.png"
+    image: "assets/app_logo.png"
     color_dark: "#000000"
-    image_dark: "assets/ITI_Logo.png"
+    image_dark: "assets/app_logo.png"

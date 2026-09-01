@@ -69,18 +69,25 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(backgroundColor: UITheme.bgColor, title: Text("SIGN IN")),
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(image: UITheme.bgImage),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Column(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height - 120,
+            ),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image.asset("assets/app_logo_2.png", scale: 10),
+                ),
                 Text(
                   "Sign in to your account",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -161,7 +168,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
