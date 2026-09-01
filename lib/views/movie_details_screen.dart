@@ -55,21 +55,36 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
       return;
     }
 
+    if (_isWatched) {
+      return;
+    }
+
+    if (mounted) {
+      setState(() => _isLoading = true);
+    }
+
     try {
-      if (!_isWatched) {
-        await WatchedCloudService().addWatchedMovie(userId, widget.movie);
+      await WatchedCloudService().addWatchedMovie(userId, widget.movie);
+
+      final bool refreshedWatched = await WatchedCloudService().isWatched(
+        userId,
+        movieId,
+      );
+
+      if (mounted) {
+        setState(() {
+          _isWatched = refreshedWatched;
+          _isLoading = false;
+        });
       }
     } catch (error) {
       if (mounted) {
-        setState(() {
-          if (!_isWatched) _isWatched = false;
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
       }
 
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Error playing video: $error")));
+      ).showSnackBar(SnackBar(content: Text("Error watching movie: $error")));
     }
   }
 

@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter_iti_movie_app/models/movie_record.dart";
-import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
 import "package:flutter_iti_movie_app/services/watched_cloud_service.dart";
 import "package:flutter_iti_movie_app/utils/theme.dart";
 import "package:flutter_iti_movie_app/widgets/movie_app_drawer.dart";
@@ -36,40 +35,58 @@ class _WatchedScreenState extends State<WatchedScreen> {
       body: Container(
         decoration: BoxDecoration(image: UITheme.bgImage),
         width: double.infinity,
-        child: SafeArea(
-          child: StreamBuilder<List<MovieRecord>>(
-            stream: _watchedMoviesStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              }
+        child: Column(
+          children: [
+            Text("Tap and hold on a movie to remove it from list"),
+            Expanded(
+              child: SafeArea(
+                child: StreamBuilder<List<MovieRecord>>(
+                  stream: _watchedMoviesStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
 
-              if (snapshot.hasError) {
-                return Center(child: Text("Error: ${snapshot.error}"));
-              }
+                    if (snapshot.hasError) {
+                      return Center(child: Text("Error: ${snapshot.error}"));
+                    }
 
-              final movies = snapshot.data ?? [];
+                    final movies = snapshot.data ?? [];
 
-              if (movies.isEmpty) {
-                return Center(child: Text("No watched movies in your list"));
-              }
+                    if (movies.isEmpty) {
+                      return Center(
+                        child: Text("No watched movies in your list"),
+                      );
+                    }
 
-              return GridView.builder(
-                padding: const EdgeInsets.all(8),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  childAspectRatio: 0.62,
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(8),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 8,
+                            childAspectRatio: 0.62,
+                          ),
+                      itemCount: movies.length,
+                      itemBuilder: (context, index) {
+                        final movie = movies[index];
+                        return MovieCard(
+                          movie: movie,
+                          onRemoveWatched: () async {
+                            await WatchedCloudService().deleteWatchedMovie(
+                              widget.userId,
+                              movie.id ?? -1,
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
                 ),
-                itemCount: movies.length,
-                itemBuilder: (context, index) {
-                  final movie = movies[index];
-                  return MovieCard(movie: movie);
-                },
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );

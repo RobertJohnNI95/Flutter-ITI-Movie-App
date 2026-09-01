@@ -6,9 +6,15 @@ import "package:flutter_iti_movie_app/services/watched_cloud_service.dart";
 import "package:flutter_iti_movie_app/views/movie_details_screen.dart";
 
 class MovieCard extends StatefulWidget {
-  const MovieCard({super.key, required this.movie, this.longPressFunc});
+  const MovieCard({
+    super.key,
+    required this.movie,
+    this.longPressFunc,
+    this.onRemoveWatched,
+  });
   final MovieRecord movie;
   final VoidCallback? longPressFunc;
+  final VoidCallback? onRemoveWatched;
 
   @override
   State<MovieCard> createState() => _MovieCardState();
@@ -124,38 +130,6 @@ class _MovieCardState extends State<MovieCard> {
     }
   }
 
-  Future<void> _removeMovieFromWatched() async {
-    final String? userId = FirebaseAuth.instance.currentUser?.uid;
-    final int? movieId = widget.movie.id;
-
-    if (userId == null || movieId == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Please sign in first")));
-      return;
-    }
-
-    try {
-      if (_isWatched) {
-        await WatchedCloudService().deleteWatchedMovie(
-          userId,
-          widget.movie.id!,
-        );
-      }
-    } catch (error) {
-      if (mounted) {
-        setState(() {
-          if (_isWatched) _isWatched = true;
-          _isLoading = false;
-        });
-      }
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Error removing video: $error")));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -167,7 +141,25 @@ class _MovieCardState extends State<MovieCard> {
           ),
         );
       },
-      onLongPress: widget.longPressFunc,
+      onLongPress: (_isWatched && widget.onRemoveWatched != null)
+          ? () {
+              showModalBottomSheet(
+                context: context,
+                builder: (bottomSheetContext) {
+                  return SafeArea(
+                    child: ListTile(
+                      leading: Icon(Icons.movie, color: Colors.red),
+                      title: Text("Remove From Watched Movies List"),
+                      onTap: () {
+                        Navigator.pop(bottomSheetContext);
+                        widget.onRemoveWatched?.call();
+                      },
+                    ),
+                  );
+                },
+              );
+            }
+          : null,
       child: Card(
         color: Colors.blueAccent.withValues(alpha: 0.3),
         elevation: 5,
@@ -221,7 +213,7 @@ class _MovieCardState extends State<MovieCard> {
                 padding: EdgeInsets.only(top: 4, bottom: 8),
                 child: _isLoading
                     ? CircularProgressIndicator()
-                    : _isWatched
+                    : (_isWatched)
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -235,8 +227,10 @@ class _MovieCardState extends State<MovieCard> {
                               color: _isFavorite ? Colors.red : Colors.black,
                             ),
                           ),
-                          SizedBox(width: 5),
-                          Icon(Icons.movie, color: Colors.lime),
+                          Padding(
+                            padding: EdgeInsets.only(left: 4),
+                            child: Icon(Icons.movie, color: Colors.lime),
+                          ),
                         ],
                       )
                     : IconButton(

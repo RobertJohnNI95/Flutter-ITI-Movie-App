@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_iti_movie_app/models/movie_record.dart";
 import "package:flutter_iti_movie_app/services/favorite_cloud_service.dart";
-import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
 import "package:flutter_iti_movie_app/utils/theme.dart";
 import "package:flutter_iti_movie_app/widgets/movie_app_drawer.dart";
 import "package:flutter_iti_movie_app/widgets/movie_card.dart";
