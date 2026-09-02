@@ -1,7 +1,9 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
+import "package:flutter_iti_movie_app/services/favorite_cloud_service.dart";
 import "package:flutter_iti_movie_app/services/firebase_auth_service.dart";
+import "package:flutter_iti_movie_app/services/watched_cloud_service.dart";
 import "package:flutter_iti_movie_app/utils/theme.dart";
 import "package:flutter_iti_movie_app/views/sign_in_screen.dart";
 import "package:flutter_iti_movie_app/widgets/movie_app_drawer.dart";
@@ -17,13 +19,85 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final FirebaseAuthService _auth = FirebaseAuthService();
+  final FavoriteCloudService _favoriteService = FavoriteCloudService();
+  final WatchedCloudService _watchedService = WatchedCloudService();
   late Future<Map<String, dynamic>?> _userFuture;
+  late Future<Map<String, int>> _statsFuture;
   final TextEditingController nameController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _userFuture = _auth.getUserDetails();
+    _statsFuture = _loadStats();
+  }
+
+  Future<Map<String, int>> _loadStats() async {
+    final userId = _auth.currentUser?.uid ?? widget.user?.uid;
+
+    if (userId == null || userId.isEmpty) {
+      return {'watched': 0, 'favorite': 0};
+    }
+
+    final results = await Future.wait([
+      _favoriteService.getFavorites(userId),
+      _watchedService.getWatchedMovies(userId),
+    ]);
+
+    return {
+      'favorite': (results[0] as List).length,
+      'watched': (results[1] as List).length,
+    };
+  }
+
+  Widget _buildStatCard(String label, int count, {Icon? icon}) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+        decoration: BoxDecoration(
+          color: UITheme.bgColor.withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: [
+            (icon == null)
+                ? Text(
+                    count.toString(),
+                    style: const TextStyle(
+                      fontSize: 35,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        count.toString(),
+                        style: const TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      icon,
+                    ],
+                  ),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -111,6 +185,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                         ],
+                      ),
+                      SizedBox(height: 20),
+                      FutureBuilder<Map<String, int>>(
+                        future: _statsFuture,
+                        builder: (context, statsSnapshot) {
+                          final favoriteCount =
+                              statsSnapshot.data?['favorite'] ?? 0;
+                          final watchedCount =
+                              statsSnapshot.data?['watched'] ?? 0;
+
+                          return Row(
+                            children: [
+                              _buildStatCard(
+                                "Watched Movies",
+                                watchedCount,
+                                icon: Icon(Icons.movie, color: Colors.lime),
+                              ),
+                              SizedBox(width: 12),
+                              _buildStatCard(
+                                "Favorite Movies",
+                                favoriteCount,
+                                icon: Icon(Icons.favorite, color: Colors.red),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                       SizedBox(height: 20),
                       Padding(
