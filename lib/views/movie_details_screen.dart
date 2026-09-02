@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:flutter_iti_movie_app/models/movie_record.dart";
 import "package:flutter_iti_movie_app/services/watched_cloud_service.dart";
 import "package:flutter_iti_movie_app/utils/theme.dart";
+import "package:flutter_iti_movie_app/widgets/rating_stars.dart";
 import "package:flutter_iti_movie_app/widgets/wide_button.dart";
 
 class MovieDetailsScreen extends StatefulWidget {
@@ -35,7 +36,10 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     }
 
     try {
-      final bool watched = await WatchedCloudService().isWatched(userId, movieId);
+      final bool watched = await WatchedCloudService().isWatched(
+        userId,
+        movieId,
+      );
 
       if (mounted) {
         setState(() {
@@ -136,7 +140,10 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                         ),
                 ),
                 SizedBox(height: 5),
-                // RatingStars(stars: movie.voteAverage),
+                RatingStars(
+                  rating: widget.movie.voteAverage,
+                  color: Colors.deepOrangeAccent,
+                ),
                 SizedBox(height: 5),
                 Text(
                   "Release Date: ${widget.movie.releaseDate ?? "Unknown"}",
