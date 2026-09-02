@@ -1,6 +1,8 @@
 # Flutter ITI Movie App
 
-<img src="assets/app_logo_2.png" width=300 style="margin-bottom: 30px">
+<p align="center">
+    <img src="assets/app_logo_2.png" width=300 style="margin-bottom: 30px">
+</p>
 
 This is a simple demo of a movie app, presented as a graduation project for a Flutter course from the Information Technology Institute (ITI).
 
@@ -27,7 +29,9 @@ The purpose of this project is to apply skills learned throughout the course by 
 
 The project uses an MVC-style organization supported by Provider, service classes, and database repositories, as follows:
 
-<img src="assets/documentation_images/architecture.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+<p align="center">
+    <img src="assets/documentation_images/architecture.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+</p>
 
 - **models/** ==> Movie models. 
 - **views/** ==> Screens/pages and UI. 
@@ -79,22 +83,26 @@ If you need to manage Firebase from the command line, install Node.js and the Fi
 
 ## Screenshots
 
-<img src="assets/documentation_images/splash.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
-<img src="assets/documentation_images/sign_in.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
-<img src="assets/documentation_images/sign_up.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
-<img src="assets/documentation_images/home.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
-<img src="assets/documentation_images/details.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
-<img src="assets/documentation_images/search.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
-<img src="assets/documentation_images/favorites.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
-<img src="assets/documentation_images/watched.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
-<img src="assets/documentation_images/profile.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
-<img src="assets/documentation_images/drawer.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+<p align="center">
+    <img src="assets/documentation_images/splash.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+    <img src="assets/documentation_images/sign_in.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+    <img src="assets/documentation_images/sign_up.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+    <img src="assets/documentation_images/home.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+    <img src="assets/documentation_images/details.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+    <img src="assets/documentation_images/search.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+    <img src="assets/documentation_images/favorites.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+    <img src="assets/documentation_images/watched.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+    <img src="assets/documentation_images/profile.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+    <img src="assets/documentation_images/drawer.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+</p>
 
 ## Database
 
 Inside the directory **lib/database/**, there are 3 database services:
 
-<img src="assets/documentation_images/database.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+<p align="center">
+    <img src="assets/documentation_images/database.png" width=300 style="margin-right: 50px; margin-bottom: 30px">
+</p>
 
 - **favorites_db_service.dart** ==> Contains and manages favorite movies for each user.
 - **movie_db_service.dart** ==> Contains and manages all movies received using API.
