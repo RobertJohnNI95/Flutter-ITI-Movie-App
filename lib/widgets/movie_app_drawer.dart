@@ -23,9 +23,9 @@ class MovieAppDrawer extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 30),
+              SizedBox(height: 25),
               Image.asset("assets/app_logo.png"),
-              SizedBox(height: 30),
+              SizedBox(height: 25),
               WideButton(
                 bgColor: (currentPage == 'profile') ? Colors.teal : null,
                 textColor: (currentPage == 'profile') ? Colors.white : null,

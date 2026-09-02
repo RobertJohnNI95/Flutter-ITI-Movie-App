@@ -39,6 +39,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
     try {
       await _auth.signIn(email: email, password: pass);
+      if (!mounted) return;
       Navigator.pushReplacement(
         // ignore: use_build_context_synchronously
         context,
@@ -55,10 +56,17 @@ class _SignInScreenState extends State<SignInScreen> {
         "too-many-requests" => "Too many attempts. Try again later.",
         _ => "Sign-in failed. Please try again.",
       };
-      ScaffoldMessenger.of(
-        // ignore: use_build_context_synchronously
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Unexpected sign-in error: $error')),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {

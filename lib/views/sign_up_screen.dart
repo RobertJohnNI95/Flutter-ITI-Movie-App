@@ -52,6 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     try {
       await _auth.signUp(email: email, password: pass, username: name);
+      if (!mounted) return;
       Navigator.pushReplacement(
         // ignore: use_build_context_synchronously
         context,
@@ -63,10 +64,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final message = switch (error.code) {
         _ => "Sign up failed. Please, try again.",
       };
-      ScaffoldMessenger.of(
-        // ignore: use_build_context_synchronously
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Unexpected sign-up error: $error')),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {

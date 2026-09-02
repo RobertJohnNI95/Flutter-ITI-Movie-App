@@ -43,16 +43,22 @@ class _MovieCardState extends State<MovieCard> {
       return;
     }
 
-    final bool favorite = await FavoriteCloudService().isFavorite(
-      userId,
-      movieId,
-    );
+    try {
+      final bool favorite = await FavoriteCloudService().isFavorite(
+        userId,
+        movieId,
+      );
 
-    if (mounted) {
-      setState(() {
-        _isFavorite = favorite;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isFavorite = favorite;
+          _isLoading = false;
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -121,13 +127,19 @@ class _MovieCardState extends State<MovieCard> {
       return;
     }
 
-    final bool watched = await WatchedCloudService().isWatched(userId, movieId);
+    try {
+      final bool watched = await WatchedCloudService().isWatched(userId, movieId);
 
-    if (mounted) {
-      setState(() {
-        _isWatched = watched;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isWatched = watched;
+          _isLoading = false;
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 

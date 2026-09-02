@@ -34,13 +34,19 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
       return;
     }
 
-    final bool watched = await WatchedCloudService().isWatched(userId, movieId);
+    try {
+      final bool watched = await WatchedCloudService().isWatched(userId, movieId);
 
-    if (mounted) {
-      setState(() {
-        _isWatched = watched;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isWatched = watched;
+          _isLoading = false;
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
